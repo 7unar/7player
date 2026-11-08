@@ -73,3 +73,55 @@ jobs:
           files: |
             dist/7player-x86_64-unknown-linux-gnu.tar.gz
             dist/7player-x86_64-unknown-linux-gnu.tar.gz.sha256
+
+  # Windows has no ALSA dependency: cpal talks to WASAPI directly, so this job
+  # needs no system packages. Serialised after Linux so both jobs append to one
+  # release instead of racing to create it.
+  windows-x86_64:
+    name: Windows x86_64
+    runs-on: windows-latest
+    needs: linux-x86_64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${GITHUB_REF_NAME#v}"
+          target="x86_64-pc-windows-msvc"
+          package="7player-${version}-${target}"
+          archive="7player-${target}.zip"
+
+          mkdir -p "dist/${package}/docs"
+          cp target/release/7player.exe "dist/${package}/"
+          cp README.md LICENSE NOTICE CHANGELOG.md install.ps1 "dist/${package}/"
+          cp LICENSES/Apache-2.0.txt "dist/${package}/"
+          cp docs/ARCHITECTURE.md docs/KEYBINDINGS.md "dist/${package}/docs/"
+          cp -r screenshots "dist/${package}/"
+
+          # Flat archive root + no timestamps, mirroring the Linux tarball so
+          # install.ps1 can unpack without guessing a nesting level.
+          ( cd "dist/${package}" && 7z a -tzip -mtc=off "../${archive}" * > /dev/null )
+
+          ( cd dist && sha256sum "${archive}" > "${archive}.sha256" )
+
+          ls -lh dist
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/7player-x86_64-pc-windows-msvc.zip
+            dist/7player-x86_64-pc-windows-msvc.zip.sha256

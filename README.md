@@ -4,11 +4,11 @@
 [![Release](https://img.shields.io/github/v/release/7unar/7player?display_name=tag&sort=semver)](https://github.com/7unar/7player/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.82%2B-orange.svg)](https://www.rust-lang.org/)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20WSL-blue.svg)](#安装)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20WSL-blue.svg)](#安装)
 
-一个用 Rust 写的网易云音乐终端播放器。基于 **Ratatui + Crossterm** 构建界面，使用 **Rodio** 解码播放，在 Linux / WSL 中运行；支持网易云扫码登录、手机号登录、搜索、排行榜、歌单、每日推荐、歌词同步、纯享歌词和 10 套主题。
+一个用 Rust 写的网易云音乐终端播放器。基于 **Ratatui + Crossterm** 构建界面，使用 **Rodio** 解码播放，在 Windows / Linux / WSL 中运行；支持网易云扫码登录、手机号登录、搜索、排行榜、歌单、每日推荐、歌词同步、纯享歌词和 10 套主题。
 
-A NetEase Cloud Music TUI player for Linux and WSL, written in Rust.
+A NetEase Cloud Music TUI player for Windows, Linux and WSL, written in Rust.
 
 [安装](#安装) · [运行](#运行) · [按键](docs/KEYBINDINGS.md) · [配置](#配置与数据) · [架构](docs/ARCHITECTURE.md) · [更新日志](CHANGELOG.md) · [贡献](CONTRIBUTING.md)
 
@@ -36,7 +36,25 @@ A NetEase Cloud Music TUI player for Linux and WSL, written in Rust.
 
 ## 安装
 
-### 一键安装
+### Windows
+
+```powershell
+irm https://raw.githubusercontent.com/7unar/7player/main/install.ps1 | iex
+```
+
+默认安装到 `%LOCALAPPDATA%\Programs\7player`，并把该目录加入用户 PATH。指定版本或目录：
+
+```powershell
+.\install.ps1 -Version 0.1.0
+.\install.ps1 -InstallDir C:\Tools\7player -NoPath
+```
+
+也可以从 [Releases](https://github.com/7unar/7player/releases/latest) 直接下载
+`7player-x86_64-pc-windows-msvc.zip`，解压后把 `7player.exe` 放进任意目录。
+
+播放走 Windows 自带的 **WASAPI**，不需要额外运行库；建议使用 Windows Terminal 且窗口不小于 **120×40**，字体需支持中文（Cascadia Code 或等宽 + 微软雅黑回退）。
+
+### Linux / WSL 一键安装
 
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/7unar/7player/main/install.sh
@@ -78,16 +96,18 @@ cargo install --git https://github.com/7unar/7player.git --locked --bin 7player
 git clone https://github.com/7unar/7player.git
 cd 7player
 cargo build --release
-./target/release/7player
 ```
+
+产物位置：Linux/WSL 是 `./target/release/7player`，Windows 是 `target\release\7player.exe`。
 
 构建依赖：
 
 - Rust stable ≥ 1.82（推荐 [rustup](https://rustup.rs/)）
-- ALSA 开发库
+- **仅 Linux/WSL 需要 ALSA 开发库**（Windows 走 WASAPI，无额外系统依赖）
   - Arch: `sudo pacman -S --needed base-devel pkgconf alsa-lib`
   - Debian/Ubuntu: `sudo apt install build-essential pkg-config libasound2-dev`
   - Fedora: `sudo dnf install gcc pkgconf-pkg-config alsa-lib-devel`
+- Windows 需要 MSVC 生成工具（rustup 安装时选择 “Desktop development with C++”）
 - 可用的终端，建议 **120×40**，最低约 **100×30**
 - 支持中文和常用符号的等宽字体（Windows Terminal 的 Cascadia Code + 微软雅黑回退即可）
 

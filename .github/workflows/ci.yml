@@ -43,3 +43,29 @@ jobs:
 
       - name: Test
         run: cargo test --locked
+
+  # Windows needs no system packages: cpal uses WASAPI, and the ALSA stderr
+  # redirect in src/audio.rs is behind #[cfg(unix)].
+  check-windows:
+    name: windows / fmt / clippy / test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Test
+        run: cargo test --locked
