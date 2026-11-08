@@ -44,7 +44,13 @@ command -v sha256sum >/dev/null 2>&1 || fail "sha256sum is required."
 if [ -n "${BASE_URL:-}" ]; then
     : # explicit mirror/local directory, mainly for testing
 elif [ "$VERSION" = "latest" ]; then
-    BASE_URL="https://github.com/${REPO}/releases/latest/download"
+    # `releases/latest/download` can be flaky on some GitHub edges; resolve
+    # the actual tag first so the asset URL is deterministic.
+    api="https://api.github.com/repos/${REPO}/releases/latest"
+    json="$(curl -fsSL --retry 3 "$api")" || fail "could not query GitHub API for the latest release; set VERSION explicitly to bypass this"
+    tag="$(printf '%s' "$json" | sed -n 's/.*"tag_name":[[:space:]]*"\([^"]*\)".*/\1/p' | head -n 1)"
+    [ -n "$tag" ] || fail "could not determine the latest release tag; set VERSION explicitly"
+    BASE_URL="https://github.com/${REPO}/releases/download/${tag}"
 else
     BASE_URL="https://github.com/${REPO}/releases/download/v${VERSION#v}"
 fi
