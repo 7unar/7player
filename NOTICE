@@ -1,0 +1,28 @@
+7player
+Copyright (c) 2026 Lunar
+
+This product includes software and protocol knowledge derived from the
+following open-source projects:
+
+pigma
+https://github.com/akirco/pigma
+Copyright (c) akirco and contributors
+Licensed under the Apache License, Version 2.0.
+The NetEase weapi/eapi request construction in src/netease/crypto.rs and parts
+of the authentication flow were adapted from pigma's ncm-api crate.
+
+go-musicfox
+https://github.com/go-musicfox/go-musicfox
+Copyright (c) go-musicfox contributors
+Licensed under the MIT License.
+The terminal interaction model (navigation, queue, login) was inspired by
+go-musicfox; no source code was copied.
+
+NeteaseCloudMusicApi
+https://github.com/Binaryify/NeteaseCloudMusicApi
+Copyright (c) NeteaseCloudMusicApi contributors
+Licensed under the MIT License.
+Used as public protocol documentation for the NetEase endpoints.
+
+The full Apache-2.0 license text is included in LICENSES/Apache-2.0.txt.
+This project itself is distributed under the MIT license (see LICENSE).

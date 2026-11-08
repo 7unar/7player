@@ -1,0 +1,12 @@
+/target/
+/dist/
+*.log
+cookies.json
+.config/
+.cache/
+screenshots/*.ansi
+*.tmp
+.DS_Store
+.idea/
+.vscode/
+.env

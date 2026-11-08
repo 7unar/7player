@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  linux-x86_64:
+    name: Linux x86_64
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential pkg-config libasound2-dev
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${GITHUB_REF_NAME#v}"
+          target="x86_64-unknown-linux-gnu"
+          package="7player-${version}-${target}"
+          archive="7player-${target}.tar.gz"
+
+          mkdir -p "dist/${package}/docs"
+          cp target/release/7player "dist/${package}/"
+          cp README.md LICENSE NOTICE CHANGELOG.md install.sh "dist/${package}/"
+          cp LICENSES/Apache-2.0.txt "dist/${package}/"
+          cp docs/ARCHITECTURE.md docs/KEYBINDINGS.md "dist/${package}/docs/"
+          cp -r screenshots "dist/${package}/"
+
+          # Flat archive root + deterministic metadata so the installer and
+          # checksums stay simple across releases.
+          tar \
+            --sort=name \
+            --mtime='2026-01-01 00:00:00 UTC' \
+            --owner=0 --group=0 --numeric-owner \
+            -C "dist/${package}" \
+            -czf "dist/${archive}" .
+
+          (
+            cd dist
+            sha256sum "${archive}" > "${archive}.sha256"
+          )
+
+          ls -lh dist
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 7player ${{ github.ref_name }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            dist/7player-x86_64-unknown-linux-gnu.tar.gz
+            dist/7player-x86_64-unknown-linux-gnu.tar.gz.sha256

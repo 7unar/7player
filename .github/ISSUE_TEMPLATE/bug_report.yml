@@ -1,0 +1,90 @@
+name: Bug report
+description: Report a crash, rendering issue, playback problem or wrong behavior
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        **Do not attach `cookies.json`, QR login keys, account names, or tokens.**
+        Redact paths and nicknames if necessary.
+
+  - type: input
+    id: version
+    attributes:
+      label: 7player version
+      description: Output of `7player --version`
+      placeholder: "7player 0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installation method
+      options:
+        - install.sh / release tarball
+        - cargo install --git
+        - cargo build from source
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: OS and terminal
+      description: Distribution, WSL version if applicable, terminal emulator and font
+      placeholder: "Arch WSL2 / Windows Terminal / Cascadia Code"
+    validations:
+      required: true
+
+  - type: input
+    id: terminal-size
+    attributes:
+      label: Terminal size
+      placeholder: "120x40"
+
+  - type: dropdown
+    id: audio
+    attributes:
+      label: Audio backend shown in the app
+      options:
+        - 系统音频
+        - 静音模拟
+        - unknown
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start `7player --no-splash`
+        2. Press ...
+        3. See ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Additional context / logs
+      description: Paste only relevant lines from `~/.cache/7player/7player.log` or the terminal.
+      render: text
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have removed cookies, tokens and account details from this report.
+          required: true

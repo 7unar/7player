@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/7unar/7player#readme
+    about: Installation, keybindings, configuration and WSL audio troubleshooting
+  - name: Security report
+    url: https://github.com/7unar/7player/security/advisories/new
+    about: Please report vulnerabilities privately, not as a public issue

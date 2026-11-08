@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest a new feature or an improvement
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the problem first, then the proposed solution.
+        7player is an unofficial client and will not add features that bypass
+        paid, copyright or region restrictions.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem?
+      placeholder: "I find it difficult to ... because ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      render: text
+
+  - type: input
+    id: terminal
+    attributes:
+      label: Terminal size / environment
+      placeholder: "120x40, Arch WSL2, Windows Terminal"
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: This feature does not bypass VIP, paid, copyright or region restrictions.
+          required: true
