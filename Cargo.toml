@@ -35,7 +35,7 @@ num-bigint = "0.4"
 percent-encoding = "2"
 qrcode = { version = "0.14", default-features = false }
 rand = "0.8"
-ratatui = "0.29"
+ratatui = "0.30"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip", "stream"] }
 rodio = "0.21"
 serde = { version = "1", features = ["derive"] }
