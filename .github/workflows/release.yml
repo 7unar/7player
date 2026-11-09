@@ -65,7 +65,7 @@ jobs:
           ls -lh dist
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: 7player ${{ github.ref_name }}
           generate_release_notes: true
@@ -120,7 +120,7 @@ jobs:
           ls -lh dist
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             dist/7player-x86_64-pc-windows-msvc.zip
