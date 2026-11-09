@@ -1,6 +1,6 @@
 [package]
 name = "seven-player"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.82"
 description = "7player — a NetEase Cloud Music TUI player written in Rust"

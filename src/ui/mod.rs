@@ -1416,6 +1416,17 @@ fn render_playlist_table(
 // Lyrics
 // ----------------------------------------------------------------------
 
+fn lyric_bounds(total: usize, height: usize, active: usize) -> (usize, usize) {
+    if total == 0 || height == 0 {
+        return (0, 0);
+    }
+    let height = height.min(total);
+    let start = active
+        .saturating_sub(height / 2)
+        .min(total.saturating_sub(height));
+    (start, (start + height).min(total))
+}
+
 fn lyric_window<'a>(app: &App, height: usize) -> Vec<Line<'a>> {
     let theme = app.theme;
     let lyrics = &app.lyrics.lyrics;
@@ -1433,16 +1444,19 @@ fn lyric_window<'a>(app: &App, height: usize) -> Vec<Line<'a>> {
         }
         return Vec::new();
     }
-    let active = app.lyrics.active.unwrap_or(0) as i32 + app.lyrics.offset;
-    let total = lyrics.lines.len() as i32;
-    let half = height as i32 / 2;
-    let start = (active - half).clamp(0, total.saturating_sub(height as i32));
+    let active_raw = app.lyrics.active.unwrap_or(0) as i64 + app.lyrics.offset as i64;
+    let total = lyrics.lines.len();
+    if total == 0 || height == 0 {
+        return Vec::new();
+    }
+    let height = height.min(total);
+    let active = active_raw.clamp(0, total.saturating_sub(1) as i64) as usize;
+    let (start, end) = lyric_bounds(total, height, active);
     let mut out = Vec::new();
-    for idx in start..total.min(start + height as i32) {
-        let idx = idx as usize;
+    for idx in start..end {
         let line = &lyrics.lines[idx];
         let is_active = app.lyrics.active == Some(idx) && app.lyrics.offset == 0;
-        let distance = (idx as i32 - active).abs();
+        let distance = idx.abs_diff(active);
         let (fg, modifier) = if is_active {
             (theme.accent, Modifier::BOLD)
         } else if distance <= 1 {
@@ -2739,4 +2753,25 @@ fn truncate(input: &str, max_width: usize) -> String {
         out.push('…');
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::lyric_bounds;
+
+    #[test]
+    fn lyric_bounds_handles_empty_or_short_windows() {
+        // This is the shape of the crash reported on small terminals:
+        // zero lyric lines while the view still asks for 9 rows.
+        assert_eq!(lyric_bounds(0, 9, 0), (0, 0));
+        assert_eq!(lyric_bounds(5, 20, 0), (0, 5));
+        assert_eq!(lyric_bounds(10, 5, 0), (0, 5));
+    }
+
+    #[test]
+    fn lyric_bounds_centers_and_clamps() {
+        assert_eq!(lyric_bounds(10, 5, 5), (3, 8));
+        assert_eq!(lyric_bounds(10, 5, 9), (5, 10));
+        assert_eq!(lyric_bounds(10, 5, 999), (5, 10));
+    }
 }

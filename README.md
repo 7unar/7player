@@ -12,7 +12,7 @@ A NetEase Cloud Music TUI player for Windows, Linux and WSL, written in Rust.
 
 [安装](#安装) · [运行](#运行) · [按键](docs/KEYBINDINGS.md) · [配置](#配置与数据) · [架构](docs/ARCHITECTURE.md) · [更新日志](CHANGELOG.md) · [贡献](CONTRIBUTING.md)
 
-> **Status:** `v0.1.0`，早期版本，API 可能随 NetEase 服务变化。
+> **Status:** `v0.1.1`，早期版本，API 可能随 NetEase 服务变化。
 > 非官方客户端，仅供学习与研究使用。请使用自己的账号，尊重版权，不要用于绕过付费/地区限制。
 
 ## 预览
@@ -33,6 +33,47 @@ A NetEase Cloud Music TUI player for Windows, Linux and WSL, written in Rust.
 
 ![Pure lyrics](screenshots/06-pure-lyrics.png)
 
+## 功能
+
+- **7player 品牌**
+  - 启动时显示手写签名风格的 `7player`（Braille 点阵），逐点书写 + 下划线收笔，60fps
+  - 按任意键或鼠标点击跳过，2.8 秒后自动进入
+  - `--no-splash` 可跳过动画，适合脚本/截图
+  - 旧 `ncm-tui` 的配置、Cookie 和音频缓存会自动迁移到 `7player` 目录
+- **网易云登录**
+  - 二维码扫码登录（推荐，最稳定）
+  - 手机号 + 密码登录（部分账号会触发风控/验证码，错误会显示在面板内）
+  - Cookie 持久化到 `~/.config/7player/cookies.json`，文件权限 `0600`
+  - `Ctrl+L` 退出登录并清除本地登录态
+- **浏览**
+  - 公开排行榜（飙升榜、热歌榜、新歌榜等 60+ 榜单）
+  - 搜索歌曲（歌名/歌手/专辑，单次最多 50 首）
+  - 登录后同步每日推荐、推荐歌单、我的歌单、红心收藏
+  - 歌单详情与整队列播放
+- **播放**
+  - Rodio 解码 MP3 / FLAC / AAC / M4A / OGG / WAV
+  - 播放/暂停、上一首/下一首、进度跳转、音量、静音
+  - 顺序 / 列表循环 / 单曲循环 / 随机播放
+  - 播放队列：加入单曲、全部加入、移除、跳播
+  - 音频缓存到 `~/.cache/7player/audio/`，重复播放不再下载
+  - 无音频设备时自动切换“静音模拟”，界面和歌词仍然可用
+- **歌词**
+  - LRC 时间轴同步，支持翻译歌词
+  - 宽屏右侧歌词栏；`y` 进入纯享歌词模式（隐藏顶栏、侧栏、播放栏）
+  - `j/k` 手动滚动，`g` 回到当前行
+- **外观**
+  - 10 套内置主题：Tokyo Night、Catppuccin Mocha/Latte、Dracula、Nord、Gruvbox Dark、Solarized Dark/Light、Rosé Pine Moon、One Dark
+  - `t` 主题选择器实时预览，Enter 应用并写入配置
+  - `b` 或点击顶栏 `▤` 折叠侧边栏，状态持久化
+  - 主题、音量、音质、侧边栏均持久化
+- **交互**
+  - Vim 风格键位：`j/k` 上下、`h/l` 切页、`gg/G` 首尾、`Ctrl+d/u` 半页、`0/$`、`/` 搜索
+  - 鼠标点击导航、歌曲、播放/暂停、进度条、音量、主题、登录标签
+  - 滚轮滚动列表、调音量、滚动歌词
+- **工程**
+  - 异步网络任务 + 独立音频线程，UI 不阻塞
+  - 自带 `--check` 联网自检；无需进入 TUI 即可验证 API 是否可用
+  - 46 个单元测试，覆盖加密、Cookie、LRC、数据模型、队列、主题、按键解析、配置和歌词窗口
 
 ## 安装
 
@@ -45,7 +86,7 @@ irm https://raw.githubusercontent.com/7unar/7player/main/install.ps1 | iex
 默认安装到 `%LOCALAPPDATA%\Programs\7player`，并把该目录加入用户 PATH。指定版本或目录：
 
 ```powershell
-.\install.ps1 -Version 0.1.0
+.\install.ps1 -Version 0.1.1
 .\install.ps1 -InstallDir C:\Tools\7player -NoPath
 ```
 
@@ -65,7 +106,7 @@ bash install.sh
 
 ```bash
 sudo env PREFIX=/usr/local bash install.sh
-VERSION=0.1.0 bash install.sh
+VERSION=0.1.1 bash install.sh
 ```
 
 安装脚本会从 GitHub Releases 下载二进制并校验 SHA-256。

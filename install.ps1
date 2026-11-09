@@ -7,7 +7,7 @@
     unpacks it into a per-user directory, and puts 7player on your PATH.
 
 .PARAMETER Version
-    Release tag to install, e.g. "0.1.0". Defaults to the newest release.
+    Release tag to install, e.g. "0.1.1". Defaults to the newest release.
 
 .PARAMETER InstallDir
     Target directory. Defaults to %LOCALAPPDATA%\Programs\7player.
@@ -19,7 +19,7 @@
     irm https://raw.githubusercontent.com/7unar/7player/main/install.ps1 | iex
 
 .EXAMPLE
-    .\install.ps1 -Version 0.1.0 -InstallDir C:\Tools\7player
+    .\install.ps1 -Version 0.1.1 -InstallDir C:\Tools\7player
 #>
 [CmdletBinding()]
 param(

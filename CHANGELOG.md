@@ -6,6 +6,15 @@ All notable changes to 7player are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-09
+
+### Fixed
+
+- Prevent a panic in the lyrics window when the terminal is very small, the
+  lyrics list is empty, or the requested window is taller than the song's lyrics
+  (`min > max` in `clamp`).
+- Add regression tests for lyric window bounds.
+
 ## [0.1.0] - 2026-11-08
 
 ### Added
@@ -21,5 +30,6 @@ All notable changes to 7player are documented here. The format is based on
 - Headless `--check` network/API self-test and 44 unit tests.
 - GitHub Actions CI and a tagged-release workflow for Linux x86_64.
 
-[Unreleased]: https://github.com/7unar/7player/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/7unar/7player/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/7unar/7player/releases/tag/v0.1.1
 [0.1.0]: https://github.com/7unar/7player/releases/tag/v0.1.0
